@@ -1,5 +1,5 @@
 /*
- * Calculates the hashtags that are commonly used for English tweets containing the word "coronavirus"
+ * Count the number of English tweets containing the word "coronavirus"
  */
 SELECT
     count(*)
