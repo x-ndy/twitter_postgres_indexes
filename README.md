@@ -53,7 +53,7 @@ but you won't have to wait hours/days to create each index and see if it works c
     Since you are not currently logged in as that user,
     you will not be able to manipulate these files directly.
 
-    The main way this is a problem is that if you need to reset/delete your volumes fro some reason.
+    The main way this is a problem is if you need to reset/delete your volumes for some reason.
     When using a named mount, this was easy to do with the
     ```
     $ docker volume prune
