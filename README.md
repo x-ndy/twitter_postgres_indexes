@@ -1,4 +1,4 @@
-# Twitter Postgres (Indexes)
+# Twitter Postgres Indexes
 
 <img align="right" src=the-sql-queries.jpg width=200px >
 
@@ -217,6 +217,13 @@ then you should see the queries taking only milliseconds to run.
 > then execute the sql file.
 > This ensures that you can always fully recreate your database schema from the project's git repo.
 
+> **HINT:**
+> Creating an index under default settings can take up to 30 minutes to complete.
+> This is because by default, postgres uses only a single core and 20MB of memory.
+> Your user accounts have permission to use up to all 80 cores, and up to 16GB of memory,
+> and telling postgres to use these resouces will dramatically improve your index construction performance.
+> You can find instructions for modifying these settings at: <https://www.cybertec-postgresql.com/en/postgresql-parallel-create-index-for-better-performance/>.
+
 ## Step 3: Create queries and indexes for the denormalized database
 
 I have provided you the sql queries for the normalized database, but not for the denormalized one.
@@ -234,11 +241,6 @@ You can check the runtime and correctness of your denormalized queries with the 
 $ time docker-compose exec pg_denormalized ./check_answers.sh sql.denormalized
 ```
 
-You will likely notice that the denormalized representation is significantly slower than the normalized representation when there are no indexes present.
-My solution takes about 4 minutes without indexes, and 3 seconds with indexes.
-The indexed solution is still slower than the normalized solution because there are sorts in the query plan that the indexes cannot eliminate.
-In fact, no set of indexes would be able to eliminate these sorts... we'll talk later about how to eliminate them using materialized views.
-
 > **HINT:**
 > Here is the output of timing my SQL queries with no indexes present.
 > ```
@@ -254,6 +256,7 @@ In fact, no set of indexes would be able to eliminate these sorts... we'll talk 
 > sys	0m0.471s
 > ```
 > Notice that these runtimes are WAY slower than for the normalized database. 
+> This is due to the overhead of the `JSONB` (more complicated processing needed to extract the information from the JSON, and more information needs to be read from the disk).
 >
 > After building the indexes, the runtimes are basically the same as for the normalized database:
 > ```
@@ -268,6 +271,8 @@ In fact, no set of indexes would be able to eliminate these sorts... we'll talk 
 > user	0m0.621s
 > sys	0m0.389s
 > ```
+>
+> Notice that with indexes, the results of the denormalized database are just as fast as with the normalized database.
 
 ## Submission
 
@@ -293,7 +298,7 @@ To submit your assignment:
    1. `2>&1` redirects stderr (2) to stdout (1), and since stdout is being redirected to a file, stderr will also be redirected to that file.
       The output of the `time` command goes to stderr, and so this combined with the subshell ensure that the time command's output gets sent into the results files.
 
-   > **HINT:**
+   > **ASIDE:**
    > Mastering these shell redirection tricks is a HUGE timesaver,
    > and something that I'd recommend anyone working on remote servers professionally do.
 
@@ -303,22 +308,22 @@ To submit your assignment:
 
 ### Grading
 
-The assignment is worth 30 points.
+The assignment is worth 32 points.
 
-1. The timing of the normalized sql queries is worth 10 points.
-    If your queries take longer than 5 seconds, you will lose 2 points per second.
+1. The normalized sql queries are worth 16 points.
 
-1. Each file in `sql.denormalized` is worth 2 points (for 10 total).
-    Passing the test cases will ensure you get these points.
+    You must pass all the test cases to get any credit.
+    (They should already be passing, so this will be easy.)
 
-1. The timing of the denormalized sql queries is worth 10 points.
-    If your queries take longer than 5 seconds, you will lose 2 points per second.
+    If your queries take longer than 4 seconds,
+    you will lose 2 points per second.
 
-   You cannot get any credit for these runtimes unless ALL of the denormalized test cases pass.
+1. The denormalized sql queries are worth 16 points.
 
-I will check the `results.*` files in your github repos to grade your timing.
+    You must pass all the test cases to get any credit.
 
-> **HINT:**
-> Creating an index can take up to 30 minutes to complete when the lambda server is under no load.
-> When other students are also creating indexes, it could take several hours to complete.
-> So you shouldn't put this assignment off to the last minute.
+    If your queries take longer than 4 seconds,
+    you will lose 2 points per second.
+
+The grader will check the `results.*` files in your github repos to grade your timing.
+If these files are not created correctly, you will receive a 0.
