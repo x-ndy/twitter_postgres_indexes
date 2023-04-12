@@ -44,9 +44,8 @@ but you won't have to wait hours/days to create each index and see if it works c
     $ cd ~/bigdata
     $ ls -l
     total 12
-    drwxr-xr-x+  2 usertest usertest 4096 Feb  2 09:09 flask_web
-    drwx------+ 19  4688518 usertest 4096 Apr  8 15:19 pg_denormalized
-    drwx------+ 19  4688518 usertest 4096 Apr  8 15:19 pg_normalized_batch
+    drwx------+ 19  4688518 csci046example 4096 Apr  8 15:19 pg_denormalized
+    drwx------+ 19  4688518 csci046example 4096 Apr  8 15:19 pg_normalized_batch
     ```
     If you run the commands above, you will have different UIDs.
     These are the UID of the `root` user of your docker container.
